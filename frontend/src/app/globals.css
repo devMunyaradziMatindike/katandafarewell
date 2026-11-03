@@ -1,0 +1,220 @@
+@import "tailwindcss";
+
+:root {
+  /* Mazowe High: navy, maroon, grey, white */
+  --ink: #121820;
+  --forest: #0b1f3a; /* navy — primary */
+  --leaf: #1e3a5f; /* blue — hover / secondary */
+  --gold: #7a1f2b; /* maroon — accent / CTA */
+  --gold-soft: #9a3a48; /* lighter maroon */
+  --cream: #f3f4f6; /* light grey surfaces */
+  --mist: #e8eaee; /* cool grey */
+  --paper: #ffffff;
+  --muted: #6b7280;
+  --line: rgba(11, 31, 58, 0.12);
+  --background: var(--paper);
+  --foreground: var(--ink);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-ink: var(--ink);
+  --color-forest: var(--forest);
+  --color-leaf: var(--leaf);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-cream: var(--cream);
+  --color-mist: var(--mist);
+  --color-paper: var(--paper);
+  --color-muted: var(--muted);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+  --font-script: var(--font-script);
+  --font-motto: var(--font-motto);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 13px;
+}
+
+body {
+  background: #ffffff;
+  color: var(--ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+.display {
+  font-family: var(--font-display), var(--font-body), system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.script {
+  font-family: var(--font-script), cursive;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+.motto {
+  font-family: var(--font-motto), cursive;
+  line-height: 1.2;
+}
+
+.progress-track {
+  background: rgba(11, 31, 58, 0.12);
+  border-radius: 999px;
+  overflow: hidden;
+  height: 0.65rem;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--forest), var(--gold));
+  transition: width 0.8s ease;
+  animation: progressGrow 1s ease;
+}
+
+.intro-stage {
+  padding-bottom: 0;
+}
+
+.image-fan {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: clamp(0.35rem, 1vw, 0.7rem);
+  padding: 1.5rem 0.75rem 0;
+  min-height: clamp(180px, 36vw, 280px);
+  overflow: hidden;
+}
+
+.fan-tile {
+  position: relative;
+  flex: 0 0 auto;
+  width: clamp(72px, 13vw, 128px);
+  aspect-ratio: 3 / 4;
+  border-radius: 1.1rem;
+  overflow: hidden;
+  box-shadow: 0 18px 40px rgba(11, 31, 58, 0.18);
+  background: var(--mist);
+  transform-origin: 50% 100%;
+  animation: fanIn 0.85s ease both;
+}
+
+.fan-tile-1 {
+  transform: rotate(-14deg) translateY(2rem);
+  animation-delay: 0.05s;
+  z-index: 1;
+}
+
+.fan-tile-2 {
+  transform: rotate(-5deg) translateY(0.35rem);
+  animation-delay: 0.12s;
+  z-index: 2;
+  width: clamp(78px, 14vw, 136px);
+}
+
+.fan-tile-3 {
+  transform: rotate(5deg) translateY(0.35rem);
+  animation-delay: 0.18s;
+  z-index: 2;
+  width: clamp(78px, 14vw, 136px);
+}
+
+.fan-tile-4 {
+  transform: rotate(14deg) translateY(2rem);
+  animation-delay: 0.24s;
+  z-index: 1;
+}
+
+@keyframes fanIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.portrait-frame {
+  border-radius: 1.25rem;
+  background: var(--mist);
+}
+
+.portrait-image {
+  border-radius: 1.25rem;
+  aspect-ratio: 16 / 11;
+  animation: fadeUp 0.9s ease both;
+}
+
+.fade-up {
+  animation: fadeUp 0.7s ease both;
+}
+
+.fade-up-delay {
+  animation: fadeUp 0.8s ease 0.15s both;
+}
+
+.fade-up-delay-2 {
+  animation: fadeUp 0.85s ease 0.28s both;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes progressGrow {
+  from {
+    width: 0%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up,
+  .fade-up-delay,
+  .fade-up-delay-2,
+  .portrait-image,
+  .progress-fill,
+  .fan-tile {
+    animation: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .fan-tile {
+    width: clamp(72px, 20vw, 110px);
+  }
+
+  .fan-tile-1 {
+    transform: rotate(-12deg) translateY(1.4rem);
+  }
+
+  .fan-tile-2 {
+    transform: rotate(-4deg) translateY(0.3rem);
+  }
+
+  .fan-tile-3 {
+    transform: rotate(4deg) translateY(0.3rem);
+  }
+
+  .fan-tile-4 {
+    transform: rotate(12deg) translateY(1.4rem);
+  }
+}
