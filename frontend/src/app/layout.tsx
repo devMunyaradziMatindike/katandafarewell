@@ -32,6 +32,10 @@ export const metadata: Metadata = {
   title: "Farewell Tribute for Mr Thompson Katanda",
   description:
     "Help honour Mr Thompson Katanda after 27 years of leadership at his farewell on 22 November 2026.",
+  icons: {
+    icon: "/images/logomhsss.png",
+    apple: "/images/logomhsss.png",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
