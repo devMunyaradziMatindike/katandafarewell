@@ -25,8 +25,6 @@ export default function DeveloperPage() {
         </div>
 
         <div className="motto mt-8 space-y-3 text-xl leading-snug text-ink sm:text-2xl">
-          <p>Mazowe High School</p>
-          <p className="text-gold">{"{6 January 2013 - 23 November 2018}"}</p>
           <p>custom software solutions</p>
           <p>
             contact :{" "}
