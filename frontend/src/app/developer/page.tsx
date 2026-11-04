@@ -13,13 +13,13 @@ export default function DeveloperPage() {
         </p>
         <h1 className="motto mt-3 text-4xl text-forest sm:text-5xl">Munyaradzi Matindike</h1>
 
-        <div className="relative mt-8 aspect-[4/5] w-full max-w-xs overflow-hidden rounded-2xl">
+        <div className="relative mt-8 aspect-[4/5] w-full max-w-[10rem] overflow-hidden rounded-2xl">
           <Image
             src="/images/profile.jpeg"
             alt="Munyaradzi Matindike"
             fill
             priority
-            sizes="(max-width: 640px) 80vw, 320px"
+            sizes="160px"
             className="object-cover object-top"
           />
         </div>
@@ -39,15 +39,13 @@ export default function DeveloperPage() {
           </p>
         </div>
 
-        <div className="mt-10 flex w-full justify-center rounded-2xl bg-forest px-6 py-8">
-          <Image
-            src="/images/signature.png"
-            alt="Munyaradzi Matindike signature"
-            width={320}
-            height={120}
-            className="h-auto w-full max-w-xs object-contain"
-          />
-        </div>
+        <Image
+          src="/images/signature.png"
+          alt="Munyaradzi Matindike signature"
+          width={280}
+          height={100}
+          className="mt-10 h-auto w-full max-w-[14rem] object-contain invert"
+        />
 
         <Link
           href="/"
