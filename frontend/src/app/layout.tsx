@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Asimovian, Caveat, Lexend, Plus_Jakarta_Sans } from "next/font/google";
+import { Caveat, Lexend, Plus_Jakarta_Sans, Sue_Ellen_Francisco } from "next/font/google";
 import "./globals.css";
 
 /** Melun High–style: high x-height geometric sans for headlines */
@@ -22,7 +22,7 @@ const script = Caveat({
   weight: ["500", "600", "700"],
 });
 
-const motto = Asimovian({
+const motto = Sue_Ellen_Francisco({
   variable: "--font-motto",
   subsets: ["latin"],
   weight: "400",
