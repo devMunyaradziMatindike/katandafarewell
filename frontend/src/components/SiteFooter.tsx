@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function SiteFooter() {
   return (
     <footer className="mt-auto border-t border-[var(--line)] bg-forest pb-20 text-paper md:pb-0">
@@ -7,14 +9,12 @@ export function SiteFooter() {
         </p>
         <p className="text-xs text-paper/75">
           Developed by{" "}
-          <a
-            href="https://nessosystems.co.zw"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/developer"
             className="font-medium text-paper underline decoration-paper/40 underline-offset-2 transition hover:decoration-paper"
           >
-            nessosystems.co.zw
-          </a>
+            Munyaradzi Matindike
+          </Link>
         </p>
       </div>
     </footer>
