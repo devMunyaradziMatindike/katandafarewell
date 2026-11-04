@@ -149,6 +149,17 @@ async function CampaignContent() {
             <p className="mt-1.5 text-xs text-muted">
               Event date: 22 November 2026 · Beneficiary: {campaign.beneficiary}
             </p>
+            <p className="mt-3 text-xs leading-relaxed text-muted">
+              To verify this fundraiser is genuine, contact{" "}
+              <span className="font-medium text-ink">Ms Chiroodza</span> on{" "}
+              <a
+                href="tel:+263776059273"
+                className="font-medium text-forest underline decoration-forest/30 underline-offset-2 hover:decoration-forest"
+              >
+                +263 77 605 9273
+              </a>
+              .
+            </p>
           </div>
         </article>
 

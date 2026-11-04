@@ -324,6 +324,18 @@ export default function DonatePage() {
               ? "Processing…"
               : `Donate ${formatMoney(selectedAmount || 0, "USD")}`}
           </button>
+
+          <p className="text-center text-[10px] leading-relaxed text-muted">
+            By donating you agree to our{" "}
+            <Link href="/privacy" className="underline decoration-[var(--line)] underline-offset-2 hover:text-forest">
+              privacy policy
+            </Link>
+            . To verify this fundraiser, call Ms Chiroodza on{" "}
+            <a href="tel:+263776059273" className="font-medium text-forest">
+              +263 77 605 9273
+            </a>
+            .
+          </p>
         </form>
 
         <aside className="mt-6 overflow-hidden rounded-2xl border border-[var(--line)] bg-gradient-to-br from-cream/80 to-mist/50 shadow-[0_10px_28px_rgba(20,32,26,0.04)]">
