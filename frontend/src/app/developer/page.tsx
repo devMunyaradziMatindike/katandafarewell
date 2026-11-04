@@ -44,7 +44,7 @@ export default function DeveloperPage() {
           alt="Munyaradzi Matindike signature"
           width={280}
           height={100}
-          className="mt-10 h-auto w-full max-w-[14rem] object-contain invert"
+          className="mt-10 h-auto w-full max-w-[14rem] object-contain brightness-0"
         />
 
         <Link
