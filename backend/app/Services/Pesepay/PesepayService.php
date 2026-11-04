@@ -67,14 +67,71 @@ class PesepayService
         return $this->checkPayment($url);
     }
 
-    public static function isPaidStatus(?string $status): bool
+    public static function normalizeStatus(?string $status): ?string
     {
-        return in_array(strtoupper((string) $status), ['SUCCESS', 'PAID'], true);
+        if ($status === null) {
+            return null;
+        }
+
+        $normalized = strtoupper(trim($status));
+
+        return $normalized === '' ? null : $normalized;
     }
 
-    public static function isFailedStatus(?string $status): bool
+    public static function isPaidStatus(?string $status, int|string|null $statusCode = null): bool
     {
-        return in_array(strtoupper((string) $status), ['FAILED', 'CANCELLED', 'CANCELED'], true);
+        if ((int) $statusCode === 304) {
+            return true;
+        }
+
+        return in_array(self::normalizeStatus($status), ['SUCCESS', 'PAID'], true);
+    }
+
+    public static function isFailedStatus(?string $status, int|string|null $statusCode = null): bool
+    {
+        $code = (int) $statusCode;
+        if (in_array($code, [300, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314], true)) {
+            return true;
+        }
+
+        return in_array(self::normalizeStatus($status), [
+            'FAILED',
+            'CANCELLED',
+            'CANCELED',
+            'TERMINATED',
+            'TIME_OUT',
+            'TIMEOUT',
+            'CLOSED',
+            'CLOSED_PERIOD_ELAPSED',
+            'INSUFFICIENT_FUNDS',
+            'ERROR',
+            'DECLINED',
+            'AUTHORIZATION_FAILED',
+            'SERVICE_UNAVAILABLE',
+            'REVERSED',
+        ], true);
+    }
+
+    /**
+     * Extract the transaction status fields from a Pesepay payload.
+     *
+     * @param  array<string, mixed>  $payload
+     * @return array{0: ?string, 1: int|string|null}
+     */
+    public static function extractStatus(array $payload): array
+    {
+        $status = $payload['transactionStatus']
+            ?? $payload['status']
+            ?? null;
+
+        $code = $payload['transactionStatusCode']
+            ?? $payload['statusCode']
+            ?? null;
+
+        return [
+            is_string($status) ? $status : null,
+            is_int($code) || is_string($code) ? $code : null,
+        ];
     }
 
     private function postEncrypted(string $path, array $payload): array

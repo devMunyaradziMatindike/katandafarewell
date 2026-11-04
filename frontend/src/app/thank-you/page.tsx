@@ -8,7 +8,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { api, formatMoney } from "@/lib/api";
 import { showThankYou } from "@/lib/swal";
 
-const POLL_DELAYS_MS = [1500, 2500, 3500, 4500, 6000, 8000];
+const POLL_DELAYS_MS = [1500, 2500, 3500, 4500, 6000, 8000, 10000, 12000, 15000, 20000];
 
 type StatusResponse = {
   data: {

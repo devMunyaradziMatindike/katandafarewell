@@ -38,7 +38,9 @@ export async function pollDonationUntilSettled(
   publicRef: string,
   signal?: AbortSignal
 ) {
-  const delays = [1500, 2500, 3500, 4500, 6000, 8000];
+  // Card/redirect can take longer than EcoCash PIN prompts.
+  const delays = [1500, 2500, 3500, 4500, 6000, 8000, 10000, 12000, 15000, 20000];
+
 
   for (const delay of delays) {
     if (signal?.aborted) {

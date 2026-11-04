@@ -88,9 +88,11 @@ class DonationController extends Controller
     {
         $donation = Donation::query()->where('public_ref', $publicRef)->firstOrFail();
 
-        if ($donation->status === 'pending' && $donation->poll_url) {
+        if ($donation->status === 'pending' && ($donation->poll_url || $donation->provider_reference)) {
             try {
-                $payload = $this->pesepay->checkPayment($donation->poll_url);
+                $payload = $donation->poll_url
+                    ? $this->pesepay->checkPayment($donation->poll_url)
+                    : $this->pesepay->checkByReference((string) $donation->provider_reference);
                 $this->applyPesepayStatus($donation, $payload);
                 $donation->refresh();
             } catch (Throwable $e) {
@@ -118,16 +120,40 @@ class DonationController extends Controller
     {
         $donation = Donation::query()->where('public_ref', $publicRef)->firstOrFail();
 
+        // Acknowledge quickly; Pesepay does not retry failed deliveries.
         try {
-            $payload = null;
-
+            // Callback body is plain JSON (not encrypted). Prefer an authoritative poll.
+            $callbackBody = $request->all();
             if ($request->filled('payload') && is_string($request->input('payload'))) {
-                $crypto = new \App\Services\Pesepay\PesepayCrypto((string) config('pesepay.encryption_key'));
-                $payload = $crypto->decrypt($request->input('payload'));
-            } elseif ($donation->poll_url) {
+                try {
+                    $crypto = new \App\Services\Pesepay\PesepayCrypto((string) config('pesepay.encryption_key'));
+                    $callbackBody = $crypto->decrypt($request->input('payload'));
+                } catch (Throwable $e) {
+                    Log::warning('Pesepay result payload decrypt failed', [
+                        'donation_id' => $donation->id,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+            }
+
+            if (is_array($callbackBody) && $callbackBody !== []) {
+                $donation->update([
+                    'provider_meta' => array_merge($donation->provider_meta ?? [], [
+                        'last_result_callback' => $callbackBody,
+                    ]),
+                    'provider_reference' => $callbackBody['referenceNumber']
+                        ?? $donation->provider_reference,
+                    'poll_url' => $callbackBody['pollUrl'] ?? $donation->poll_url,
+                ]);
+            }
+
+            $payload = null;
+            if ($donation->poll_url) {
                 $payload = $this->pesepay->checkPayment($donation->poll_url);
             } elseif ($donation->provider_reference) {
                 $payload = $this->pesepay->checkByReference($donation->provider_reference);
+            } elseif (is_array($callbackBody) && isset($callbackBody['transactionStatus'])) {
+                $payload = $callbackBody;
             }
 
             if (is_array($payload)) {
@@ -244,26 +270,25 @@ class DonationController extends Controller
 
     private function applyPesepayStatus(Donation $donation, array $payload): void
     {
-        $status = $payload['transactionStatus']
-            ?? $payload['status']
-            ?? null;
+        [$status, $statusCode] = PesepayService::extractStatus($payload);
 
         $donation->update([
             'provider_meta' => array_merge($donation->provider_meta ?? [], [
                 'last_status_check' => $payload,
             ]),
-            'provider_reference' => $payload['referenceNumber']
-                ?? $donation->provider_reference,
+            'provider_reference' => isset($payload['referenceNumber']) && is_string($payload['referenceNumber'])
+                ? trim($payload['referenceNumber'])
+                : $donation->provider_reference,
             'poll_url' => $payload['pollUrl'] ?? $donation->poll_url,
         ]);
 
-        if (PesepayService::isPaidStatus(is_string($status) ? $status : null)) {
+        if (PesepayService::isPaidStatus($status, $statusCode)) {
             $donation->markConfirmed();
 
             return;
         }
 
-        if (PesepayService::isFailedStatus(is_string($status) ? $status : null)) {
+        if (PesepayService::isFailedStatus($status, $statusCode)) {
             $donation->markFailed();
         }
     }
