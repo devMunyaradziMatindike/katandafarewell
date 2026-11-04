@@ -258,13 +258,16 @@ class DonationController extends Controller
     private function callbackUrls(Donation $donation): array
     {
         $apiBase = rtrim((string) config('app.url'), '/');
-        $frontBase = rtrim((string) env('FRONTEND_URL', 'http://localhost:3000'), '/');
+        $frontBase = rtrim((string) config('app.frontend_url', 'http://localhost:3000'), '/');
+        $method = $donation->payment_method === 'ecoCash' ? 'ecoCash' : 'redirect';
 
         return [
             'result' => $apiBase.'/api/donations/'.$donation->public_ref.'/pesepay/result',
+            // Browser return: thank-you polls status; cancelled/failed redirect payments go to /donate.
             'return' => $frontBase.'/thank-you?ref='.$donation->public_ref
                 .'&amount='.$donation->amount
-                .'&poll=1',
+                .'&poll=1'
+                .'&method='.$method,
         ];
     }
 

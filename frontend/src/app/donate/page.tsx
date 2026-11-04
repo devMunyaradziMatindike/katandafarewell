@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { FormEvent, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { FormEvent, Suspense, useEffect, useState } from "react";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { ApiError, api, formatMoney } from "@/lib/api";
@@ -42,7 +43,9 @@ type DonateResponse = {
   };
 };
 
-export default function DonatePage() {
+function DonateForm() {
+  const searchParams = useSearchParams();
+  const paymentNotice = searchParams.get("payment");
   const [campaign, setCampaign] = useState<Campaign | null>(null);
   const [amount, setAmount] = useState<number>(50);
   const [customAmount, setCustomAmount] = useState("");
@@ -190,6 +193,12 @@ export default function DonatePage() {
         <p className="mt-1 text-sm text-muted">
           No sign-up required. Pay with EcoCash, card, or bank transfer.
         </p>
+
+        {paymentNotice === "cancelled" ? (
+          <p className="mt-3 rounded-lg border border-[var(--line)] bg-mist/70 px-3 py-2.5 text-xs text-muted">
+            Payment was cancelled or not completed. You can try again below.
+          </p>
+        ) : null}
 
         <form
           onSubmit={onSubmit}
@@ -380,5 +389,23 @@ export default function DonatePage() {
       </main>
       <SiteFooter />
     </>
+  );
+}
+
+export default function DonatePage() {
+  return (
+    <Suspense
+      fallback={
+        <>
+          <SiteHeader />
+          <main className="mx-auto max-w-lg px-3 py-10 text-center text-muted sm:px-4">
+            Loading…
+          </main>
+          <SiteFooter />
+        </>
+      }
+    >
+      <DonateForm />
+    </Suspense>
   );
 }

@@ -100,8 +100,8 @@ function ThankYouContent() {
           }
           if (res.data.status === "failed") {
             Swal.close();
-            setStatus("failed");
-            setMessage("Payment was not completed. You can try again from the donate page.");
+            // Cancelled / failed Pesepay checkout → send donors back to donate.
+            window.location.replace("/donate?payment=cancelled");
             return;
           }
           setMessage(
@@ -116,6 +116,11 @@ function ThankYouContent() {
 
       if (!cancelled && !controller.signal.aborted) {
         Swal.close();
+        // Redirect checkouts that never confirm (including Pesepay cancel) go back to donate.
+        if (method === "redirect") {
+          window.location.replace("/donate?payment=cancelled");
+          return;
+        }
         setStatus("pending");
         setMessage(
           "Payment is still pending. If you completed it, it will appear once Pesepay confirms."
